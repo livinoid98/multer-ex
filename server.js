@@ -7,32 +7,28 @@ const ejs = require("ejs");
 app.use(express.static('views'));
 app.set('view engine', 'ejs');
 
-app.listen(3000, () => {
-	const dir = "./uploads";
-    if(!fs.existsSync(dir)) {
-    	fs.mkdirSync(dir);
-    }
-    console.log("서버 실행");
+var port = 3000;
+app.listen(port, function(){
+  var dir = './uploadedFiles';
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir); // 2
+
+  console.log('server on! http://localhost:'+port);
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads')
+var storage  = multer.diskStorage({ // 2
+  destination(req, file, cb) {
+    cb(null, 'uploadedFiles/');
   },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
+  filename(req, file, cb) {
+    cb(null, `${Date.now()}__${file.originalname}`);
+  },
 });
-
-const upload = multer({ storage: storage });
+var upload = multer({ dest: 'uploadedFiles/' }); // 3-1
 
 app.get('/', (req,res) => {
     res.render('index.ejs');
 });
 
-app.post('/upimage', upload.single('img'), (req, res, next) => {
-    res.status(200).send({
-        message: "Ok",
-        fileInfo: req.file
-    })
+app.post('/uploadFile', upload.single('attachment'), function(req,res){ // 4 
+  res.render('confirmation', { file:req.file, files:null });
 });

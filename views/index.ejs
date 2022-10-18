@@ -7,17 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/upimage" method="POST">
-        <input type="file" name="img"/>
-        <input type="submit" value="제출하기"/>
+    <form action="/uploadFile" enctype="multipart/form-data" method="post">
+        <input type="file" name="attachment">
+        <button type="submit" class="btn btn-primary">Upload</button>
     </form>
-    <script>
-        const fileEl = document.querySelector('input[type="file"]');
-        const submitEl = document.querySelector('input[type="submit"]');
-
-        submitEl.addEventListener('click', function(){
-            console.log(fileEl);
-        });
-    </script>
 </body>
 </html>
